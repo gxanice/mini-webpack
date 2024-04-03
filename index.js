@@ -4,13 +4,45 @@ import ejs from "ejs";
 import parser from "@babel/parser";
 import traverse from "@babel/traverse";
 import { transformFromAst } from "babel-core";
+import { jsonLoader } from "./jsonLoader.js";
 
 let id = 0;
 
+const webpackConfig = {
+  module: {
+    rules: [
+      {
+        test: /\.json$/,
+        use: [jsonLoader],
+      },
+    ],
+  },
+};
+
 function createAsset(filePath) {
   // 1.获取文件内容
-  const source = fs.readFileSync(filePath, {
+  let source = fs.readFileSync(filePath, {
     encoding: "utf-8",
+  });
+
+  // initLoader,使用loader进行处理
+  const loader = webpackConfig.module.rules;
+  // loader上下文对象
+  const loaderContext = {
+    addDeps(dep) {
+      console.log("addDeps", dep);
+    },
+  };
+
+  loader.forEach(({ test, use }) => {
+    if (test.test(filePath)) {
+      // 从后到前顺序执行
+      if (Array.isArray(use)) {
+        use.forEach((fn) => {
+          source = fn.call(loaderContext, source);
+        });
+      }
+    }
   });
 
   // 2.获取依赖关系
@@ -68,8 +100,6 @@ function build(graph) {
       mapping,
     };
   });
-
-  console.log(data);
 
   const code = ejs.render(template, { data });
 

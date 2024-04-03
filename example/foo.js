@@ -1,4 +1,5 @@
-import {bar} from "./bar.js";
+import { bar } from "./bar.js";
+import user from "./user.json";
 
 export function foo() {
   bar();
