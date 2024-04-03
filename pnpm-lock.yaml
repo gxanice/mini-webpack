@@ -6,10 +6,10 @@ settings:
 
 dependencies:
   '@babel/parser':
-    specifier: ^7.24.1
+    specifier: ^7.16.7
     version: 7.24.1
   '@babel/traverse':
-    specifier: ^7.24.1
+    specifier: ^7.17.7
     version: 7.24.1
   babel-core:
     specifier: ^6.26.3
@@ -18,8 +18,11 @@ dependencies:
     specifier: ^1.7.0
     version: 1.7.0
   ejs:
-    specifier: ^3.1.9
+    specifier: ^3.1.6
     version: 3.1.9
+  tapable:
+    specifier: ^2.2.1
+    version: 2.2.1
 
 packages:
 
@@ -1089,6 +1092,11 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       has-flag: 4.0.0
+    dev: false
+
+  /tapable@2.2.1:
+    resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
+    engines: {node: '>=6'}
     dev: false
 
   /to-fast-properties@1.0.3:
