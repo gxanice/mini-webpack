@@ -1,5 +1,5 @@
-import foo from './foo.js'
+import { foo } from "./foo.js";
 
-foo()
+foo();
 
-console.log("main.js")
+console.log("main.js");

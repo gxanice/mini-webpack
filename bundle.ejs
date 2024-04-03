@@ -1,34 +1,28 @@
 (function (modules) {
-function require(filePath) {
-const fn = modules[filePath];
+function require(id) {
+const [fn, mapping] = modules[id];
 
 const module = {
 exports: {},
 };
 
-fn(require, module, module.exports);
+function localRequire(filePath) {
+const id = mapping[filePath];
+
+return require(id);
+}
+
+fn(localRequire, module, module.exports);
 
 return module.exports;
 }
 
-require("./main.js");
+require(0);
+
 })({
-"./foo.js": function fooJs(require, module, exports) {
-// foo.js
-function foo() {
-console.log("foo.js");
-}
-
-module.exports = {
-foo,
-};
-},
-"./main.js": function mainJs(require, module, exports) {
-// main.js
-const { foo } = require("./foo.js");
-
-foo();
-
-console.log("main.js");
-},
-});
+<% data.forEach(info=>{ %>
+    "<%- info["id"] %>":[function(require, module, exports){
+        <%- info["code"] %>
+            },<%- JSON.stringify(info["mapping"]) %>],
+                <% })%>
+                    });

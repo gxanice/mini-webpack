@@ -5,6 +5,8 @@ import parser from "@babel/parser";
 import traverse from "@babel/traverse";
 import { transformFromAst } from "babel-core";
 
+let id = 0;
+
 function createAsset(filePath) {
   // 1.获取文件内容
   const source = fs.readFileSync(filePath, {
@@ -31,6 +33,8 @@ function createAsset(filePath) {
     filePath,
     code,
     deps,
+    mapping: {},
+    id: id++,
   };
 }
 
@@ -43,6 +47,7 @@ function createGraph() {
   for (const asset of queue) {
     asset.deps.forEach((relativePath) => {
       const child = createAsset(path.resolve("./example", relativePath));
+      asset.mapping[relativePath] = child.id;
       queue.push(child);
     });
   }
@@ -55,10 +60,20 @@ function build(graph) {
     encoding: "utf-8",
   });
 
-  const code = ejs.render(template);
+  const data = graph.map((asset) => {
+    const { id, code, mapping } = asset;
+    return {
+      id,
+      code,
+      mapping,
+    };
+  });
+
+  console.log(data);
+
+  const code = ejs.render(template, { data });
 
   fs.writeFileSync("./dist/bundle.js", code);
-  console.log(code);
 }
 
 const graph = createGraph();
